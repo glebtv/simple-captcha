@@ -65,6 +65,9 @@ module SimpleCaptcha
   mattr_accessor :pointsize
   @@pointsize = 30
 
+  mattr_accessor :wave_count
+  @@wave_count = 10
+
   def self.add_image_style(name, params = [])
     SimpleCaptcha::ImageHelpers.image_styles.update(name.to_s => params)
   end
