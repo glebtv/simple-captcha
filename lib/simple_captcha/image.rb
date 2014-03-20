@@ -10,7 +10,7 @@ module SimpleCaptcha #:nodoc
       'red'          => ['-alpha set', '-fill \#A5A5A5', '-background \#800E19', '-size 245x60', 'xc:\#800E19'],
     }
 
-    DISTORTIONS = ['low', 'medium', 'high']
+    DISTORTIONS = ['none', 'low', 'medium', 'high']
 
     class << self
 
@@ -38,6 +38,7 @@ module SimpleCaptcha #:nodoc
           DISTORTIONS[rand(DISTORTIONS.length)] :
           DISTORTIONS.include?(key) ? key : 'low'
         case key.to_s
+          when 'none' then return [0, 100]
           when 'low' then return [0 + rand(2), 80 + rand(20)]
           when 'medium' then return [2 + rand(2), 50 + rand(20)]
           when 'high' then return [4 + rand(2), 30 + rand(20)]
@@ -56,6 +57,9 @@ module SimpleCaptcha #:nodoc
     end
 
     private
+      def letter_width
+        SimpleCaptcha.pointsize * 0.7
+      end
 
       def generate_simple_captcha_image(simple_captcha_key) #:nodoc
         amplitude, frequency = ImageHelpers.distortion(SimpleCaptcha.distortion)
@@ -75,17 +79,24 @@ module SimpleCaptcha #:nodoc
 
         dst = Tempfile.new(RUBY_VERSION < '1.9' ? 'simple_captcha.png' : ['simple_captcha', '.png'], SimpleCaptcha.tmp_path)
         dst.binmode
-        text.split(//).each_with_index do |letter, index|
-          i = -(2  * psz) + (index * 0.7 * psz) + rand(-3..3)
-          params << "-draw \"translate #{i},#{rand(-3..3)} skewX #{rand(-15..15)} gravity center text 0,0 '#{letter}'\" "
+        
+        letters = text.split(//)
+        text_width = letters.size * letter_width
+        
+        letters.each_with_index do |letter, index|
+          translate = SimpleCaptcha.distortion == 'none' ? '' : "translate #{rand(-3..3)},#{rand(-3..3)} skewX #{rand(-15..15)}"
+          offset = index * letter_width - ( text_width - letter_width ) / 2
+          params << "-draw \"#{translate} gravity center text #{offset},0 '#{letter}'\" "
         end
 
-        params << "-wave #{amplitude}x#{frequency}"
+        unless SimpleCaptcha.distortion == 'none'
+          params << "-wave #{amplitude}x#{frequency}"
 
-        unless params.join(' ').index('-size').nil?
-          size = params.join(' ').match '-size (\d+)x(\d+)'
-          (1..SimpleCaptcha.wave_count).each do |i|
-            params << "-draw \"polyline #{rand(size[1].to_i)},#{rand(size[2].to_i)} #{rand(size[1].to_i)},#{rand(size[2].to_i)}\""
+          unless params.join(' ').index('-size').nil?
+            size = params.join(' ').match '-size (\d+)x(\d+)'
+            (1..SimpleCaptcha.wave_count).each do |i|
+              params << "-draw \"polyline #{rand(size[1].to_i)},#{rand(size[2].to_i)} #{rand(size[1].to_i)},#{rand(size[2].to_i)}\""
+            end
           end
         end
 
