@@ -28,9 +28,11 @@ module SimpleCaptcha
         body = []
         if !code.blank? && Utils::simple_captcha_value(code)
           return send_file(generate_simple_captcha_image(code), :type => 'image/jpeg', :disposition => 'inline', :filename =>  'simple_captcha.jpg')
+        else
+          [500, {
+             "Content-Type" => 'text/plain',
+          }, "captcha error"]
         end
-        
-        [status, headers, body]
       end
       
       def captcha_path?(request_path)
@@ -48,7 +50,7 @@ module SimpleCaptcha
         status = options[:status] || 200
         headers = {
           "Content-Disposition" => "#{options[:disposition]}; filename='#{options[:filename]}'",
-          # "Content-Type" => options[:type],
+          "Content-Type" => options[:type],
           'Content-Transfer-Encoding' => 'binary',
           'Cache-Control' => 'private'
         }
