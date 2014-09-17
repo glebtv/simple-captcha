@@ -2,8 +2,6 @@ module SimpleCaptcha
   class SimpleCaptchaData < ::ActiveRecord::Base
     self.table_name = "simple_captcha_data"
 
-    attr_accessible :key, :value
-
     class << self
       def get_data(key)
         data = find_by_key(key) || new(:key => key)
