@@ -31,7 +31,7 @@ module SimpleCaptcha
         else
           [500, {
              "Content-Type" => 'text/plain',
-          }, "captcha error"]
+          }, ["captcha error"]]
         end
       end
       
