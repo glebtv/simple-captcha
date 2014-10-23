@@ -9,14 +9,14 @@ module SimpleCaptcha
     
     module ClassMethods
       # Example:
-		  # <% form_for :post, :url => posts_path do |form| %>
-		  #   ...
-		  #   <%= form.simple_captcha :label => "Enter numbers.." %>
-		  # <% end %>
-		  #
-		  def simple_captcha(options = {})
-      	options.update :object => @object_name
-      	show_simple_captcha(objectify_options(options))
+      # <% form_for :post, :url => posts_path do |form| %>
+      #   ...
+      #   <%= form.simple_captcha :label => "Enter numbers.." %>
+      # <% end %>
+      #
+      def simple_captcha(options = {})
+        options.update :object => @object_name
+        show_simple_captcha(objectify_options(options))
       end
       
       private
