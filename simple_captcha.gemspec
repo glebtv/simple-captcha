@@ -17,5 +17,5 @@ Gem::Specification.new do |s|
   s.extra_rdoc_files = %w(README.rdoc)
   s.require_paths = %w(lib)
 
-  s.add_development_dependency("activesupport", [">= 3.2"])
+  s.add_development_dependency("activesupport", [">= 5.0"])
 end
