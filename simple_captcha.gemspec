@@ -17,5 +17,7 @@ Gem::Specification.new do |s|
   s.extra_rdoc_files = %w(README.rdoc)
   s.require_paths = %w(lib)
 
-  s.add_development_dependency("activesupport", [">= 5.0"])
+  s.add_development_dependency 'bundler'
+  s.add_development_dependency 'rake'
+  s.add_development_dependency 'activesupport', '>= 5.0'
 end
